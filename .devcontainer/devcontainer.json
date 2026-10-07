@@ -1,0 +1,23 @@
+{
+  "name": "Salla Theme - Ubuntu 24.04",
+  "dockerComposeFile": "../compose.yaml",
+  "service": "salla",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "salla",
+  "updateRemoteUserUID": false,
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "bash .devcontainer/setup.sh && curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "mblode.twig-language-2",
+        "openai.chatgpt"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+services:
+  salla:
+    image: salla-dev:latest
+    container_name: salla-dev
+    build:
+      context: .devcontainer
+      dockerfile: Dockerfile
+      args:
+        SALLA_CLI_VERSION: ${SALLA_CLI_VERSION:-latest}
+    init: true
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - salla-home:/home/salla
+      - codex-data:/home/salla/.codex
+    # Optional local dev servers. The actual Salla preview URL comes from the CLI.
+    ports:
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:5173:5173"
+    command: ["sleep", "infinity"]
+
+volumes:
+  salla-home:
+  codex-data:
