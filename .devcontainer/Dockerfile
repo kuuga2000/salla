@@ -17,12 +17,13 @@ COPY --from=node /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        ca-certificates curl git openssh-client unzip xz-utils libstdc++6 \
+        bubblewrap ca-certificates curl git openssh-client unzip xz-utils libstdc++6 \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
     && mkdir -p /opt/npm-global /workspace \
-    && npm install --global "@salla.sa/cli@${SALLA_CLI_VERSION}" \
+    && npm install --global "@salla.sa/cli@${SALLA_CLI_VERSION}" @openai/codex \
+    && codex --version \
     && npm cache clean --force \
     && chown -R salla:salla /opt/npm-global /home/salla /workspace
 

@@ -6,7 +6,7 @@
   "remoteUser": "salla",
   "updateRemoteUserUID": false,
   "shutdownAction": "stopCompose",
-  "postCreateCommand": "bash .devcontainer/setup.sh && curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
   "customizations": {
     "vscode": {
       "extensions": [

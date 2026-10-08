@@ -4,6 +4,7 @@ set -euo pipefail
 node --version
 npm --version
 salla --version
+codex --version
 
 if [[ -f package-lock.json ]]; then
     npm ci
