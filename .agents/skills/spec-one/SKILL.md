@@ -1,6 +1,6 @@
 ---
 name: spec-one
-description: Create, review, update, implement, or verify a feature using one SPEC.md that preserves requirements, decisions, technical design, tasks, and validation evidence. Use for specification-driven feature work in Salla themes or other software repositories; a spec-only request never authorizes implementation.
+description: Create, review, or implement a ticket with spec-one mode, SL-xxx ticket code, theme name, and feature title. Keep requirements, research, planning, tasks, decisions, progress, and verification evidence in one ticket-code-feature-title-slug.md specification. Use for specification-driven feature work in Salla themes or other software repositories; a spec-only request never authorizes implementation.
 ---
 
 # Spec One
@@ -11,12 +11,28 @@ Scale detail to feature complexity. Keep simple changes brief without skipping m
 
 ## Language
 
-- Write SKILL.md and all generated SPEC.md documents in English.
+- Write SKILL.md and all new or updated specifications in English, including headings, requirements, business rules, acceptance criteria, decisions, design, tasks, and validation records, regardless of the language of the user's prompt.
+- When updating an existing non-English specification, translate its prose into English in the same file while preserving meaning, stable IDs, decisions, and recorded progress.
 - Communicate with the user, ask clarification questions, and explain results in Bahasa Indonesia, unless the user requests another language.
 - Preserve code identifiers, API fields, paths, commands, and official platform terminology.
 - Preserve the original meaning of business rules during translation.
 - Record ambiguity explicitly instead of silently inventing an interpretation.
 - User prompt examples inside SKILL.md may use Bahasa Indonesia.
+
+## Request format
+
+Support this compact request format:
+
+```text
+$spec-one <mode> <ticket-code> <theme-name>: <feature-title>
+```
+
+- Parse the mode, ticket code, and theme name before the first colon; treat the remaining text as the feature title. Support `spec`, `review`, and `implement`, mapping them to SPEC, REVIEW, and IMPLEMENT below.
+- `spec` creates or updates the ticket specification only; `review` reports findings without editing; `implement` executes authorized work from the existing specification and records progress and verification there.
+- A title identifies the feature; it does not authorize additional work or replace the existing ticket's scope. Apply explicit task restrictions or follow-up instructions from the request.
+- Missing ticket code or theme name may be taken only from established active-ticket context. If either is missing, ambiguous, or invalid, ask for the missing/corrected value and wait before ticket-dependent work. Never infer a new ticket from an example or unrelated prior ticket.
+- For a new specification, obtain a meaningful feature title from the request or established context; ask if it cannot be determined. Follow-up work can locate the existing file by ticket and theme without a new title.
+- Existing natural-language update, continuation, verification, and combined spec/implementation requests remain supported under the authorization rules below. The compact format does not remove these workflows or expand their permissions.
 
 ## Modes and authorization
 
@@ -24,7 +40,7 @@ Determine the mode from the current request and existing authorization; record t
 
 | Request | Mode and permitted work |
 | --- | --- |
-| Create a spec | SPEC: create or update only the feature SPEC.md. Do not change application source, tests, dependencies, or runtime configuration. Read-only investigation is allowed. |
+| Create a spec | SPEC: create or update only the feature specification file. Do not change application source, tests, dependencies, or runtime configuration. Read-only investigation is allowed. |
 | Review a spec | REVIEW: read the spec and evidence, then report findings with IDs, conflicts, gaps, impact, and suggested fixes. Do not edit unless fixes or updates are requested. |
 | Update a spec | SPEC: apply the requested decisions to the same document and reconcile affected requirements, criteria, design, and tasks. This does not authorize source changes. |
 | Implement | IMPLEMENT: read and analyze the current spec, then perform authorized tasks and required dependencies without unnecessary renewed approval. |
@@ -35,11 +51,22 @@ Determine the mode from the current request and existing authorization; record t
 
 A request for a spec alone never authorizes implementation. Readiness is not authorization. Do not implement work dependent on unresolved critical business rules, security decisions, or public contracts; continue independent authorized work. Silence does not resolve a critical question. Do not commit, push, deploy, publish, or send messages to others without appropriate authorization. Do not install Spec Kit as part of this workflow.
 
-## Locate context and the single feature file
+## Ticket naming and theme locations
+
+- Require ticket codes in the format `SL-xxx` (for example, `SL-002`), matching `^SL-[0-9]{3}$`. Preserve the supplied or established number, including leading zeroes. Never invent or automatically assign a ticket number.
+- A ticket number is required before creating a specification. If none is provided or established for the active ticket, ask the user for it and wait for their answer. Do not create a placeholder specification while waiting.
+- For a new file, derive `/workspace/specs/<theme-name>/<ticket-code>-<feature-title-slug>.md`. Translate a non-English feature title into English while preserving meaning, lowercase it, replace spaces and punctuation with hyphens, collapse repeated hyphens, and remove leading/trailing hyphens. Use English lowercase words (and relevant numerals) separated by hyphens; for example, `Homepage hero` becomes `homepage-hero`. If a meaningful English slug cannot be determined, ask rather than using a fallback title.
+- Do not use the prefix `SALLA`, the filename `SPEC.md`, or any alternative filename as a fallback.
+- Determine `<theme-name>` from the current request or active project context. Do not hardcode a specific theme. If the target theme is unclear, ask the user and wait for their answer before creating a specification.
+- Derive the theme code directory as `/workspace/themes/<theme-name>/`. Before deriving a new specification filename, search `/workspace/specs/<theme-name>/` for `<ticket-code>-*.md`. If a specification already exists for that ticket and theme, reuse it and preserve its filename even when the feature title changes. Resolve multiple matches before editing or creating anything.
+- When SPEC mode requires a new specification, create missing `/workspace/specs/<theme-name>/` directories once the ticket code and theme are known. REVIEW is read-only and must not create directories or files. If REVIEW or IMPLEMENT has no existing specification, report the missing file and ask how to proceed; do not silently create a substitute specification or start unspecified implementation.
+- Keep all requirements, research, planning, tasks, decisions, progress, and verification evidence in one file per ticket for each selected theme. Update the same file for follow-up work; do not create another file when the title or scope evolves.
+
+## Locate context and the single ticket file
 
 1. Read applicable AGENTS.md and repository instructions before writing. Inspect the repository root, current working directory, dev container, project configuration, established spec locations, existing feature documents, and relevant decisions. Determine the actual project or theme directory rather than assuming the workspace root contains application code.
-2. Before creating a spec, search by feature intent, slug, and existing requirements. Reuse the existing feature file for continuation. Use `specs/<feature-slug>/SPEC.md` unless the repository has an agreed spec location. Do not relocate an existing spec or create competing copies. If several files plausibly represent the same feature, resolve ownership before creating another.
-3. Keep context, relevant principles, requirements, clarifications, research, design, contracts, tasks, analysis, checklists, and validation records in that same SPEC.md. Do not split these into constitution, research, plan, tasks, contracts, checklist, or validation files.
+2. Resolve the request format, mode, ticket code, and target theme before ticket-dependent work. Search `/workspace/specs/<theme-name>/` by the exact ticket prefix first, then check feature intent, title, and existing requirements. Reuse the same ticket file and preserve its filename for continuation. Only when no ticket file exists and SPEC creation is authorized, derive the English title slug and new path using the rules above. Repository conventions do not provide a fallback filename or location. Do not relocate an existing spec or create competing copies. If several files plausibly represent the same ticket, resolve ownership before creating another.
+3. Keep context, relevant principles, requirements, clarifications, research, design, contracts, tasks, analysis, checklists, and validation records in that same specification file. Do not split these into constitution, research, plan, tasks, contracts, checklist, or validation files.
 4. Read existing files before editing. Preserve unrelated changes, still-valid decisions, stable IDs, and valid progress. Allocate new IDs without renumbering existing IDs or reusing canceled IDs. Mark replaced or canceled items `superseded` or `dropped` with a reason; tasks use `dropped` and identify their replacement when applicable.
 5. Keep this skill itself in one SKILL.md, including the template and examples. Do not create scripts, references, README, agents metadata, or other supporting skill files.
 6. During authorized implementation, application source, tests, and configuration belong in their normal locations. Necessary application/tooling artifacts are allowed: the one-file rule governs feature planning and records, not all application files. Do not change Codex or dev container configuration merely to make this skill discoverable.
@@ -54,9 +81,9 @@ Record significant decision and scope changes briefly, including their authoriza
 
 ## Workflow: actions, outputs, and gates
 
-All planning outputs below belong in the same feature SPEC.md. In REVIEW mode, report findings without modifying it. Revisit affected stages when a decision changes; this is not a mandatory restart of every stage.
+Resolve the ticket file using the request format and naming rules before applying the stages below. All planning outputs belong in that same ticket specification file. In REVIEW mode, report findings without modifying it. Revisit affected stages when a decision changes; this is not a mandatory restart of every stage.
 
-| Stage | Actions | Output in SPEC.md | Condition to proceed |
+| Stage | Actions | Output in specification file | Condition to proceed |
 | --- | --- | --- | --- |
 | Context/principles | Read project instructions, relevant code/configuration, decisions, and existing constitution or guidelines. Summarize relevant established principles with sources; distinguish proposed principles. Do not copy/move governance documents unnecessarily or invent agreed project policy. | Metadata, context, constraints, relevant principles and evidence. | Enough context to specify the intended change; missing evidence is explicit. |
 | Specify | Define the problem, goals, scope, user stories, functional requirements, business rules, relevant nonfunctional needs, measurable acceptance criteria, and edge cases. Establish expected behavior before implementation choices. Use verified information and user decisions. | Requirements and criteria with stable IDs; desired outcomes and scope boundaries. | Requirements are testable; material ambiguity enters Clarify. |
@@ -102,7 +129,7 @@ Apply only when the actual project is a Salla theme; otherwise follow the softwa
 - Do not add a backend or take over checkout without an explicit, justified requirement and authorization.
 - If the theme/starter is unavailable, record that limitation and its blockers. Do not invent paths, components, variables, or package scripts. Keep any intended design clearly provisional until verified.
 
-## Ready-to-use SPEC.md template
+## Ready-to-use specification template
 
 Fill with evidence and actual decisions; bracketed text is an instruction to replace, not a fact. Use `Not applicable` with a short reason for genuinely irrelevant sections. Use `Pending` or `Unverified` for work/evidence not yet available, never `Not applicable` to hide missing required work. Keep all twelve sections, but scale their contents to complexity. Create rows and IDs only for real items; add stable IDs using the next unused number.
 
@@ -112,7 +139,11 @@ Fill with evidence and actual decisions; bracketed text is an instruction to rep
 ## 1. Metadata
 
 - Feature title: [Title]
-- Slug: [feature-slug]
+- Ticket code: [SL-xxx; supplied or established ticket number]
+- Feature title slug: [English lowercase words separated by hyphens; preserve existing filename for follow-ups]
+- Target theme: [Theme name from the request or active project context]
+- Theme code directory: [/workspace/themes/<theme-name>/]
+- Specification path: [Existing ticket file, or /workspace/specs/<theme-name>/<ticket-code>-<feature-title-slug>.md for a new file]
 - Status: Draft
 - Created date: [YYYY-MM-DD]
 - Last updated date: [YYYY-MM-DD]
@@ -218,25 +249,22 @@ Allowed statuses: planned, passed, failed, not run. Identify the revision and en
 
 ## Usage examples
 
-Enter these prompts inside Codex CLI launched in the repository. The feature and IDs are illustrative; inspect the actual spec before using them.
+The ticket and theme below are illustrative, not defaults. Use the actual request or established active context; ask and wait when either is missing. Enter these prompts inside Codex CLI launched in the repository.
 
-1. **New spec without implementation**
-   > $spec-one Buat spec fitur pencarian produk. Simpan di specs/product-search/SPEC.md jika belum ada spec fitur yang sama. Kerjakan dalam mode SPEC saja, tanpa implementasi; catat kebutuhan yang belum jelas.
+1. **Create or update a specification only**
+   > $spec-one spec SL-002 nura-fashion: Homepage hero
 
-2. **Review and findings only**
-   > $spec-one Review specs/product-search/SPEC.md. Laporkan gap, konflik, dan coverage requirements → acceptance criteria → tasks. Jangan mengubah file atau mengimplementasikan fitur.
+   New-file path: `/workspace/specs/nura-fashion/SL-002-homepage-hero.md`; code context: `/workspace/themes/nura-fashion/`. If SL-002 already has a specification for this theme, update that file and preserve its filename. Stop after planning and analysis.
 
-3. **Update a business rule**
-   > $spec-one Perbarui specs/product-search/SPEC.md: pencarian dimulai setelah pengguna memasukkan minimal 3 karakter. Sesuaikan requirements, acceptance criteria, desain, dan tasks yang terdampak; pertahankan ID lama dan catat perubahan keputusan. Jangan ubah source aplikasi.
+2. **Review the existing ticket without edits**
+   > $spec-one review SL-002 nura-fashion: Homepage hero
 
-4. **Implement a particular task**
-   > $spec-one Implementasikan T-003 dalam specs/product-search/SPEC.md beserta dependensi yang diperlukan dalam scope tersebut. Baca spec terbaru, jalankan validasi relevan, dan perbarui progres serta bukti di file yang sama.
+   Locate the existing SL-002 file, read its evidence, and report conflicts, gaps, and requirements → acceptance criteria → tasks coverage.
 
-5. **Continue recorded implementation**
-   > $spec-one Lanjutkan implementasi fitur berdasarkan specs/product-search/SPEC.md dan progres yang tercatat. Cocokkan progres dengan kode aktual, kerjakan tasks tersisa yang diotorisasi, dan catat blocker tanpa memperluas scope.
+3. **Implement the existing ticket**
+   > $spec-one implement SL-002 nura-fashion: Homepage hero
 
-6. **Verify and update results**
-   > $spec-one Verifikasi implementasi terhadap specs/product-search/SPEC.md. Jalankan pemeriksaan yang berlaku, lalu perbarui hasil aktual, bukti, tasks, dan status fitur di spec yang sama. Jangan memperbaiki source tanpa instruksi implementasi; jangan tandai Verified jika pemeriksaan wajib belum terpenuhi.
+   Read the existing specification, analyze readiness and actual progress, execute authorized tasks and dependencies, and record relevant checks and evidence in the same file. This does not authorize commits, publishing, or deployment.
 
 ## Workflow provenance and discovery
 
@@ -244,6 +272,6 @@ Principles adapted from official GitHub Spec Kit documentation:
 - https://github.com/github/spec-kit/blob/main/docs/guides/existing-projects.md — grounded project principles, bounded changes, planning against existing code, and consistency analysis before implementation.
 - https://github.com/github/spec-kit/blob/main/templates/commands/clarify.md — identify meaningful ambiguity and record clarified behavior in the specification.
 
-This skill deliberately consolidates feature artifacts into one SPEC.md and uses the user's authorization modes instead of requiring Spec Kit installation, separate commands, or additional files.
+This skill deliberately consolidates feature artifacts into one specification file and uses the user's authorization modes instead of requiring Spec Kit installation, separate commands, or additional files.
 
 Official Codex skill authoring/discovery documentation: https://learn.chatgpt.com/docs/build-skills . Repository-local `.agents/skills` is supported; SKILL.md requires name and description frontmatter. Codex documents automatic skill-change detection, with restart as a fallback if changes do not appear. This documentation does not establish that discovery has been tested in any particular session.
