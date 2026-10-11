@@ -17,7 +17,7 @@ COPY --from=node /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        bubblewrap ca-certificates curl git openssh-client unzip xz-utils libstdc++6 \
+        bubblewrap ca-certificates curl git openssh-client unzip vim xz-utils libstdc++6 \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \

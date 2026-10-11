@@ -5,7 +5,7 @@ Paket ini berisi environment pengembangan, belum berisi theme Raed.
 ## Isi
 
 - Ubuntu 24.04 LTS dari image dasar tanpa desktop.
-- Node.js 22, npm, Salla CLI, Git, curl, dan SSH client.
+- Node.js 22, npm, Salla CLI, Git, curl, Vim, dan SSH client.
 - User `ubuntu` (bukan root).
 - Home disimpan di Docker volume agar konfigurasi CLI dan cache npm bertahan.
 - VS Code Dev Containers dan Docker Compose menggunakan konfigurasi yang sama.
