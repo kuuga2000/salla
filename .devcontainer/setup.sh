@@ -5,6 +5,7 @@ node --version
 npm --version
 salla --version
 codex --version
+firefox --version
 
 if [[ -f package-lock.json ]]; then
     npm ci

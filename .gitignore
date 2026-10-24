@@ -5,3 +5,9 @@ node_modules/
 *.log
 /themes/*
 !/themes/.gitkeep
+id_ed25519*
+
+# development associated files
+Screenshot 2026-10-12 005037.png
+.pnpm-store
+image.png

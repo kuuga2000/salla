@@ -11,7 +11,9 @@ Paket ini berisi environment pengembangan, belum berisi theme Raed.
 - VS Code Dev Containers dan Docker Compose menggunakan konfigurasi yang sama.
 
 Node disalin dari image resmi Node ke Ubuntu. PHP/Composer, database, Java,
-dan browser tidak dipasang karena fokus paket ini adalah theme Salla.
+tidak dipasang karena fokus paket ini adalah theme Salla. Firefox dipasang dari
+[repository DEB resmi Mozilla](https://support.mozilla.org/en-US/kb/install-firefox-linux)
+dan `BROWSER=firefox` diatur untuk CLI serta terminal VS Code.
 Dependensi build tambahan dapat ditambahkan jika theme yang dipilih memerlukannya.
 Node 22 dipilih sebagai baseline; cek `engines` dalam package.json theme nanti.
 
@@ -42,6 +44,18 @@ salla theme create
 
 Ikuti instruksi CLI dan hubungkan akun Salla Partners dengan GitHub.
 Jika CLI menampilkan URL login, buka URL tersebut di browser Windows.
+Untuk membuka login dengan Firefox di container, jalankan **Dev Containers:
+Rebuild Container** setelah perubahan konfigurasi, lalu buka terminal baru:
+
+```bash
+echo "$BROWSER"
+firefox --version
+salla login
+```
+
+Firefox membutuhkan koneksi display GUI (misalnya X11/WSLg) agar jendelanya
+terlihat. Pada Compose tanpa VS Code, teruskan display/socket dari host bila
+ingin memakai Firefox di container.
 Pilih starter yang tersedia untuk mempelajari Raed atau impor repository theme Anda.
 Masuk ke folder theme yang dibuat CLI, lalu:
 

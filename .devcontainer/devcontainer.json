@@ -5,6 +5,9 @@
   "workspaceFolder": "/workspace",
   "remoteUser": "salla",
   "updateRemoteUserUID": false,
+  "remoteEnv": {
+    "BROWSER": "firefox"
+  },
   "shutdownAction": "stopCompose",
   "postCreateCommand": "bash .devcontainer/setup.sh",
   "customizations": {
@@ -16,7 +19,10 @@
         "openai.chatgpt"
       ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.env.linux": {
+          "BROWSER": "firefox"
+        }
       }
     }
   }
